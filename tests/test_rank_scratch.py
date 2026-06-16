@@ -34,6 +34,14 @@ def test_tfidf_vector_empty_is_empty():
     assert tfidf_vector([], {"x": 1.0}) == {}
 
 
+def test_query_with_no_usable_terms_scores_zero():
+    # A query of only stopwords leaves an empty vector -> all scores 0, no crash.
+    docs = load_documents()
+    ranking = rank("und der die", docs)
+    assert len(ranking) == len(docs)
+    assert all(score == 0.0 for _, score in ranking)
+
+
 def test_each_query_top_document_is_expected():
     docs = load_documents()
     queries = load_queries()

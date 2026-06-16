@@ -18,7 +18,8 @@ def compute_idf(doc_tokens: list[list[str]]) -> dict[str, float]:
     for tokens in doc_tokens:
         for term in set(tokens):
             df[term] += 1
-    return {term: math.log(n_docs / (1 + d)) + 1 for term, d in df.items()}
+    return {term: math.log(n_docs / (1 + doc_freq)) + 1
+            for term, doc_freq in df.items()}
 
 
 def tfidf_vector(tokens: list[str], idf: dict[str, float]) -> dict[str, float]:
@@ -27,13 +28,14 @@ def tfidf_vector(tokens: list[str], idf: dict[str, float]) -> dict[str, float]:
         return {}
     counts = Counter(tokens)
     length = len(tokens)
-    return {t: (c / length) * idf.get(t, 0.0) for t, c in counts.items()}
+    return {term: (count / length) * idf.get(term, 0.0)
+            for term, count in counts.items()}
 
 
 def cosine_similarity(a: dict[str, float], b: dict[str, float]) -> float:
     """Cosine similarity between two sparse term -> weight vectors."""
     shared = set(a) & set(b)
-    dot = sum(a[t] * b[t] for t in shared)
+    dot = sum(a[term] * b[term] for term in shared)
     norm_a = math.sqrt(sum(w * w for w in a.values()))
     norm_b = math.sqrt(sum(w * w for w in b.values()))
     if norm_a == 0 or norm_b == 0:
@@ -46,10 +48,10 @@ def rank(query: str, documents: dict[str, str]) -> list[tuple[str, float]]:
     names = list(documents)
     doc_tokens = [preprocess(documents[name]) for name in names]
     idf = compute_idf(doc_tokens)
-    doc_vectors = [tfidf_vector(toks, idf) for toks in doc_tokens]
+    doc_vectors = [tfidf_vector(tokens, idf) for tokens in doc_tokens]
     query_vector = tfidf_vector(preprocess(query), idf)
-    scores = [(name, cosine_similarity(query_vector, dv))
-              for name, dv in zip(names, doc_vectors)]
+    scores = [(name, cosine_similarity(query_vector, doc_vector))
+              for name, doc_vector in zip(names, doc_vectors)]
     # Sort by score descending; break ties by filename for a stable ordering.
     return sorted(scores, key=lambda pair: (-pair[1], pair[0]))
 
