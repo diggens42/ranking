@@ -35,17 +35,28 @@ def get_suggested_queries() -> list[str]:
 
 
 st.set_page_config(page_title="Dokumenten-Ranking", page_icon="🔎")
+
+with st.sidebar:
+    st.header("Methode")
+    ranker_name = st.radio(
+        "Ranking-Verfahren", list(RANKERS), label_visibility="collapsed"
+    )
+    st.markdown(
+        "**So funktioniert's**\n\n"
+        "1. Text normalisieren (Kleinschreibung, Stoppwörter, Stemming)\n"
+        "2. **TF-IDF** gewichten – seltene Themenwörter zählen mehr\n"
+        "3. **Kosinus-Ähnlichkeit** zwischen Query und Dokument"
+    )
+
 st.title("🔎 Dokumenten-Relevanz-Ranking")
 st.caption(
-    "TF-IDF + Kosinus-Ähnlichkeit: die Query wird mit jedem Dokument verglichen "
-    "und nach Relevanz-Score absteigend sortiert."
+    "Die Query wird mit jedem Dokument verglichen und nach Relevanz-Score "
+    "absteigend sortiert."
 )
 
 documents = get_documents()
 
-ranker_name = st.radio("Methode", list(RANKERS), horizontal=True)
-
-st.write("**Beispiel-Queries** (zum Ausprobieren anklicken):")
+st.markdown("**Beispiel-Queries** – zum Ausprobieren anklicken:")
 for suggestion in get_suggested_queries():
     if st.button(suggestion, use_container_width=True):
         st.session_state["query"] = suggestion
@@ -54,14 +65,34 @@ query = st.text_input("Query", key="query", placeholder="Frage eingeben …")
 
 if query:
     ranking = RANKERS[ranker_name](query, documents)
-    table = pd.DataFrame(
-        [(i + 1, name, round(score, 4)) for i, (name, score) in enumerate(ranking)],
-        columns=["Rang", "Dokument", "Score"],
-    )
     top_name, top_score = ranking[0]
-    if top_score > 0:
-        st.success(f"Relevantestes Dokument: **{top_name}** (Score {top_score:.4f})")
-    else:
-        st.warning("Keine inhaltliche Übereinstimmung gefunden (alle Scores 0).")
-    st.table(table.set_index("Rang"))
-    st.bar_chart(table.set_index("Dokument")["Score"])
+
+    with st.container(border=True):
+        if top_score > 0:
+            st.success(
+                f"Relevantestes Dokument: **{top_name}**  ·  Score {top_score:.4f}"
+            )
+        else:
+            st.warning("Keine inhaltliche Übereinstimmung gefunden (alle Scores 0).")
+
+        table = pd.DataFrame(
+            [(i + 1, name, score) for i, (name, score) in enumerate(ranking)],
+            columns=["Rang", "Dokument", "Score"],
+        )
+        st.dataframe(
+            table,
+            hide_index=True,
+            use_container_width=True,
+            column_config={
+                "Rang": st.column_config.NumberColumn(width="small"),
+                "Dokument": st.column_config.TextColumn(),
+                # Bar is relative to the best score so ranking reads at a glance;
+                # the printed number stays the true cosine score.
+                "Score": st.column_config.ProgressColumn(
+                    "Relevanz",
+                    format="%.4f",
+                    min_value=0.0,
+                    max_value=max(top_score, 1e-9),
+                ),
+            },
+        )
