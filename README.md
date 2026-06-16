@@ -41,6 +41,16 @@ py src/rank_sklearn.py     # scikit-learn version
 (On macOS/Linux use `python` instead of `py`. The scripts set UTF-8 output
 themselves, so umlauts print correctly on the Windows console.)
 
+## Demo UI (optional)
+A small Streamlit app (`app/app.py`) wraps the ranker for live demos: pick the
+method (pure-Python or scikit-learn), click one of the three example queries or
+type your own, and see the ranked table and score chart.
+```
+py -m streamlit run app/app.py
+```
+It only loads the corpus and calls the existing `rank` functions — no scoring
+logic is duplicated.
+
 ## Test
 ```
 py -m pytest -v

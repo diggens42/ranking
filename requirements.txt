@@ -1,3 +1,4 @@
 snowballstemmer
 scikit-learn
 pytest
+streamlit
