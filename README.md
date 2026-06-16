@@ -35,10 +35,11 @@ py -m pip install -r requirements.txt
 
 ## Run
 ```
-py -X utf8 src/rank_scratch.py     # pure-Python version
-py -X utf8 src/rank_sklearn.py     # scikit-learn version
+py src/rank_scratch.py     # pure-Python version
+py src/rank_sklearn.py     # scikit-learn version
 ```
-(`-X utf8` lets the Windows console print umlauts; on macOS/Linux plain `python src/rank_scratch.py` is fine.)
+(On macOS/Linux use `python` instead of `py`. The scripts set UTF-8 output
+themselves, so umlauts print correctly on the Windows console.)
 
 ## Test
 ```

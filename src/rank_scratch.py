@@ -11,7 +11,7 @@ from collections import Counter
 from german_text import preprocess
 
 
-def compute_idf(doc_tokens: list) -> dict:
+def compute_idf(doc_tokens: list[list[str]]) -> dict[str, float]:
     """Smoothed IDF over the corpus: log(N / (1 + df)) + 1."""
     n_docs = len(doc_tokens)
     df = Counter()
@@ -21,7 +21,7 @@ def compute_idf(doc_tokens: list) -> dict:
     return {term: math.log(n_docs / (1 + d)) + 1 for term, d in df.items()}
 
 
-def tfidf_vector(tokens: list, idf: dict) -> dict:
+def tfidf_vector(tokens: list[str], idf: dict[str, float]) -> dict[str, float]:
     """TF-IDF weights for one token list. TF = raw count / document length."""
     if not tokens:
         return {}
@@ -30,7 +30,7 @@ def tfidf_vector(tokens: list, idf: dict) -> dict:
     return {t: (c / length) * idf.get(t, 0.0) for t, c in counts.items()}
 
 
-def cosine_similarity(a: dict, b: dict) -> float:
+def cosine_similarity(a: dict[str, float], b: dict[str, float]) -> float:
     """Cosine similarity between two sparse term -> weight vectors."""
     shared = set(a) & set(b)
     dot = sum(a[t] * b[t] for t in shared)
@@ -41,7 +41,7 @@ def cosine_similarity(a: dict, b: dict) -> float:
     return dot / (norm_a * norm_b)
 
 
-def rank(query: str, documents: dict) -> list:
+def rank(query: str, documents: dict[str, str]) -> list[tuple[str, float]]:
     """Rank documents ({name: text}) against a query, descending by score."""
     names = list(documents)
     doc_tokens = [preprocess(documents[name]) for name in names]
@@ -50,12 +50,15 @@ def rank(query: str, documents: dict) -> list:
     query_vector = tfidf_vector(preprocess(query), idf)
     scores = [(name, cosine_similarity(query_vector, dv))
               for name, dv in zip(names, doc_vectors)]
-    return sorted(scores, key=lambda pair: pair[1], reverse=True)
+    # Sort by score descending; break ties by filename for a stable ordering.
+    return sorted(scores, key=lambda pair: (-pair[1], pair[0]))
 
 
 if __name__ == "__main__":
+    import sys
     from corpus import load_documents, load_queries, print_ranking
 
+    sys.stdout.reconfigure(encoding="utf-8")  # print umlauts on the Windows console
     documents = load_documents()
     for q in load_queries():
         print_ranking(q, rank(q, documents))

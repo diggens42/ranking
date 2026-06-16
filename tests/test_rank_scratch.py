@@ -1,4 +1,5 @@
-from rank_scratch import cosine_similarity, compute_idf, tfidf_vector
+from corpus import load_documents, load_queries
+from rank_scratch import cosine_similarity, compute_idf, rank, tfidf_vector
 
 
 def test_cosine_identical_vectors_is_one():
@@ -31,10 +32,6 @@ def test_tfidf_vector_weights_terms_by_idf():
 
 def test_tfidf_vector_empty_is_empty():
     assert tfidf_vector([], {"x": 1.0}) == {}
-
-
-from rank_scratch import rank
-from corpus import load_documents, load_queries
 
 
 def test_each_query_top_document_is_expected():

@@ -6,13 +6,13 @@ DATA_DIR = _ROOT / "data"
 QUERIES_FILE = _ROOT / "0_queries.txt"
 
 
-def load_documents(folder: Path = DATA_DIR) -> dict:
+def load_documents(folder: Path = DATA_DIR) -> dict[str, str]:
     """Read every .txt file in *folder* into a {filename: text} dict."""
     return {p.name: p.read_text(encoding="utf-8")
             for p in sorted(folder.glob("*.txt"))}
 
 
-def load_queries(path: Path = QUERIES_FILE) -> list:
+def load_queries(path: Path = QUERIES_FILE) -> list[str]:
     """Parse 'Query N' blocks: the next non-empty line after each header."""
     lines = path.read_text(encoding="utf-8").splitlines()
     queries = []
@@ -26,7 +26,7 @@ def load_queries(path: Path = QUERIES_FILE) -> list:
     return queries
 
 
-def print_ranking(query: str, ranking: list) -> None:
+def print_ranking(query: str, ranking: list[tuple[str, float]]) -> None:
     print(f"\nQuery: {query}")
     print(f"  {'Dokument':<22}{'Score':>10}")
     print(f"  {'-' * 22}{'-' * 10}")
