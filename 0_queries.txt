@@ -1,0 +1,8 @@
+Query 1
+Welche Informationen gibt es über Wärmepumpen und den Heizungsmarkt in Deutschland?
+
+Query 2
+Wie entwickelt sich die Nutzung von Photovoltaik und Solarstrom in Deutschland?
+
+Query 3
+Wie verbreitet sind Smart Meter in Deutschland?

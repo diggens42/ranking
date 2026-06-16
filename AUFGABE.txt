@@ -1,0 +1,29 @@
+Erstelle ein Python-Programm, das eine Query mit dem Inhalt von drei .txt-Dokumenten vergleicht und ein Ranking der relevantesten Dokumente erstellt.
+
+Gegeben sind (in Anhang):
+drei Queries
+drei .txt Dokumente 
+
+Anforderungen:
+.txt-Dateien automatisch aus einem Ordner einlesen
+Query mit jedem Dokument vergleichen
+Relevanz-Score berechnen
+Dokumenten nach Score absteigend sortieren
+Query sowie Liste Titel/Dateiname und Score ausgeben
+
+ Hinweise:
+Die Methode zum vergleich von Query und Dokumenten ist frei wählbar.
+Ein einfacher, nachvollzierbarer Ansatz ist ausreichend - Bitte kein Overengineering.
+Die Aufgabe ist für ca. 1-2 Studen Bearbeitungszeit gedacht.
+Solltest Du zu keinem Ergebnis kommen oder an irgendeiner Stelle Probleme haben, kannst du uns im Termin erläutern, wie du vorgegangen bist.
+Bei inhaltlichen Fragen kannst du dich gerne an Nicolas (in cc) wenden. 
+Plane für die Vorstellung deiner Ergebnisse ca. 10 Min ein.
+
+ Out-of-Scope: 
+Keine Nutzung eines LLMs zur Generierung einer Antwort.
+Keine externen API-Calls, z. B. OpenAI, Azure OpenAI oder ähnliche Dienste.
+Keine Nutzung von Frameworks wie LangChain oder LlamaIndex.
+Keine Nutzung von Azure AI Search oder einer Vektordatenbank.
+
+ Ziel / Verhalten:
+Die Aufgabe soll die Grundidee von Retrieval zeigen. Das passende Dokument soll bei der jeweiligen Query zu einem bestimmten Thema den höchsten Relevanz-Score erhalten.
