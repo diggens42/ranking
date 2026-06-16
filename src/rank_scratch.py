@@ -51,3 +51,11 @@ def rank(query: str, documents: dict) -> list:
     scores = [(name, cosine_similarity(query_vector, dv))
               for name, dv in zip(names, doc_vectors)]
     return sorted(scores, key=lambda pair: pair[1], reverse=True)
+
+
+if __name__ == "__main__":
+    from corpus import load_documents, load_queries, print_ranking
+
+    documents = load_documents()
+    for q in load_queries():
+        print_ranking(q, rank(q, documents))
