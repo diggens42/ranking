@@ -1,4 +1,4 @@
-from rank_scratch import cosine_similarity
+from rank_scratch import cosine_similarity, compute_idf, tfidf_vector
 
 
 def test_cosine_identical_vectors_is_one():
@@ -12,3 +12,22 @@ def test_cosine_disjoint_vectors_is_zero():
 
 def test_cosine_empty_vector_is_zero():
     assert cosine_similarity({}, {"a": 1.0}) == 0.0
+
+
+def test_idf_downweights_common_terms():
+    # 'a' appears in every doc; 'b' is rare -> 'a' must get a lower idf
+    docs = [["a", "b"], ["a", "c"], ["a", "d"]]
+    idf = compute_idf(docs)
+    assert idf["a"] < idf["b"]
+
+
+def test_tfidf_vector_weights_terms_by_idf():
+    idf = {"x": 2.0, "y": 1.0}
+    vec = tfidf_vector(["x", "y", "y"], idf)
+    # x: (1/3)*2 ; y: (2/3)*1
+    assert abs(vec["x"] - (1 / 3) * 2.0) < 1e-9
+    assert abs(vec["y"] - (2 / 3) * 1.0) < 1e-9
+
+
+def test_tfidf_vector_empty_is_empty():
+    assert tfidf_vector([], {"x": 1.0}) == {}

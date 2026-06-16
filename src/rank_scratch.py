@@ -6,6 +6,26 @@ visible. (BM25 would be the more sophisticated — and for a three-document
 corpus, over-engineered — alternative.)
 """
 import math
+from collections import Counter
+
+
+def compute_idf(doc_tokens: list) -> dict:
+    """Smoothed IDF over the corpus: log(N / (1 + df)) + 1."""
+    n_docs = len(doc_tokens)
+    df = Counter()
+    for tokens in doc_tokens:
+        for term in set(tokens):
+            df[term] += 1
+    return {term: math.log(n_docs / (1 + d)) + 1 for term, d in df.items()}
+
+
+def tfidf_vector(tokens: list, idf: dict) -> dict:
+    """TF-IDF weights for one token list. TF = raw count / document length."""
+    if not tokens:
+        return {}
+    counts = Counter(tokens)
+    length = len(tokens)
+    return {t: (c / length) * idf.get(t, 0.0) for t, c in counts.items()}
 
 
 def cosine_similarity(a: dict, b: dict) -> float:
