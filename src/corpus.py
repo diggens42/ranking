@@ -13,14 +13,16 @@ def load_documents(folder: Path = DATA_DIR) -> dict:
 
 
 def load_queries(path: Path = QUERIES_FILE) -> list:
-    """Parse 'Query N' blocks: the non-empty line after each 'Query' header."""
+    """Parse 'Query N' blocks: the next non-empty line after each header."""
     lines = path.read_text(encoding="utf-8").splitlines()
     queries = []
     for i, line in enumerate(lines):
-        if line.strip().lower().startswith("query") and i + 1 < len(lines):
-            text = lines[i + 1].strip()
-            if text:
-                queries.append(text)
+        if line.strip().lower().startswith("query"):
+            # Scan forward to the next non-empty line (tolerates blank lines).
+            for nxt in lines[i + 1:]:
+                if nxt.strip():
+                    queries.append(nxt.strip())
+                    break
     return queries
 
 

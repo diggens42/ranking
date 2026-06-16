@@ -1,6 +1,7 @@
 """scikit-learn TF-IDF + cosine ranker — same inputs and preprocessing as the
-from-scratch version, confirming the hand-written math matches a trusted
-library."""
+from-scratch version. Scores differ slightly (sklearn uses a different IDF
+smoothing), but it produces the same ranking order, cross-checking the
+hand-written version against a trusted library."""
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
