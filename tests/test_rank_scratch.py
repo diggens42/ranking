@@ -31,3 +31,20 @@ def test_tfidf_vector_weights_terms_by_idf():
 
 def test_tfidf_vector_empty_is_empty():
     assert tfidf_vector([], {"x": 1.0}) == {}
+
+
+from rank_scratch import rank
+from corpus import load_documents, load_queries
+
+
+def test_each_query_top_document_is_expected():
+    docs = load_documents()
+    queries = load_queries()
+    expected = ["waermepumpe.txt", "photovoltaik.txt", "smartmeter.txt"]
+    assert len(queries) == 3
+    for query, exp in zip(queries, expected):
+        ranking = rank(query, docs)
+        assert ranking[0][0] == exp
+        # scores must be sorted descending
+        scores = [s for _, s in ranking]
+        assert scores == sorted(scores, reverse=True)

@@ -8,6 +8,8 @@ corpus, over-engineered — alternative.)
 import math
 from collections import Counter
 
+from german_text import preprocess
+
 
 def compute_idf(doc_tokens: list) -> dict:
     """Smoothed IDF over the corpus: log(N / (1 + df)) + 1."""
@@ -37,3 +39,15 @@ def cosine_similarity(a: dict, b: dict) -> float:
     if norm_a == 0 or norm_b == 0:
         return 0.0
     return dot / (norm_a * norm_b)
+
+
+def rank(query: str, documents: dict) -> list:
+    """Rank documents ({name: text}) against a query, descending by score."""
+    names = list(documents)
+    doc_tokens = [preprocess(documents[name]) for name in names]
+    idf = compute_idf(doc_tokens)
+    doc_vectors = [tfidf_vector(toks, idf) for toks in doc_tokens]
+    query_vector = tfidf_vector(preprocess(query), idf)
+    scores = [(name, cosine_similarity(query_vector, dv))
+              for name, dv in zip(names, doc_vectors)]
+    return sorted(scores, key=lambda pair: pair[1], reverse=True)
