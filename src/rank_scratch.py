@@ -1,10 +1,4 @@
-"""Pure-Python TF-IDF + cosine similarity document ranker.
-
-No ML libraries: vocabulary, term frequency, inverse document frequency,
-TF-IDF vectors and cosine similarity are all computed by hand so every step is
-visible. (BM25 would be the more sophisticated — and for a three-document
-corpus, over-engineered — alternative.)
-"""
+"""Pure-Python TF-IDF + cosine similarity document ranker."""
 import math
 from collections import Counter
 
@@ -52,7 +46,6 @@ def rank(query: str, documents: dict[str, str]) -> list[tuple[str, float]]:
     query_vector = tfidf_vector(preprocess(query), idf)
     scores = [(name, cosine_similarity(query_vector, doc_vector))
               for name, doc_vector in zip(names, doc_vectors)]
-    # Sort by score descending; break ties by filename for a stable ordering.
     return sorted(scores, key=lambda pair: (-pair[1], pair[0]))
 
 
@@ -60,7 +53,7 @@ if __name__ == "__main__":
     import sys
     from corpus import load_documents, load_queries, print_ranking
 
-    sys.stdout.reconfigure(encoding="utf-8")  # print umlauts on the Windows console
+    sys.stdout.reconfigure(encoding="utf-8")
     documents = load_documents()
     for q in load_queries():
         print_ranking(q, rank(q, documents))

@@ -18,7 +18,6 @@ def load_queries(path: Path = QUERIES_FILE) -> list[str]:
     queries = []
     for i, line in enumerate(lines):
         if line.strip().lower().startswith("query"):
-            # Scan forward to the next non-empty line (tolerates blank lines).
             for nxt in lines[i + 1:]:
                 if nxt.strip():
                     queries.append(nxt.strip())
@@ -27,6 +26,7 @@ def load_queries(path: Path = QUERIES_FILE) -> list[str]:
 
 
 def print_ranking(query: str, ranking: list[tuple[str, float]]) -> None:
+    """Print one query's ranking as an aligned table."""
     print(f"\nQuery: {query}")
     print(f"  {'Dokument':<22}{'Score':>10}")
     print(f"  {'-' * 22}{'-' * 10}")

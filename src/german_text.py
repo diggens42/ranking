@@ -1,14 +1,8 @@
-"""German text preprocessing shared by both rankers.
-
-``preprocess`` turns raw German text into normalized, stemmed tokens, so the
-from-scratch and scikit-learn rankers differ only in their scoring math.
-"""
+"""German text preprocessing shared by both rankers."""
 import re
 
 from snowballstemmer import stemmer
 
-# Small inline German stopword list — kept here (not a dependency) so the
-# preprocessing stays fully transparent for the walkthrough.
 STOPWORDS = {
     "der", "die", "das", "den", "dem", "des", "ein", "eine", "einen", "einem",
     "einer", "eines", "und", "oder", "aber", "in", "im", "an", "am", "auf",
@@ -20,8 +14,6 @@ STOPWORDS = {
 }
 
 _STEMMER = stemmer("german")
-# Split on any run of characters that is not a German letter or digit;
-# this also breaks hyphenated compounds like "PV-Anlagen".
 _SPLIT = re.compile(r"[^a-zäöüß0-9]+")
 
 

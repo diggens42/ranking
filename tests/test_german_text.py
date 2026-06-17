@@ -12,5 +12,4 @@ def test_splits_hyphenated_compounds():
 
 
 def test_stems_inflection_to_same_token():
-    # plural and singular must collapse to one stem so query/doc match
     assert preprocess("Wärmepumpen")[0] == preprocess("Wärmepumpe")[0]

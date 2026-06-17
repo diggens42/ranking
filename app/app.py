@@ -1,14 +1,10 @@
-"""Minimal Streamlit UI for the document ranker — for live demonstration.
-
-Kept separate from `src/`: it only loads the corpus and calls the existing
-ranking functions, so the scoring logic stays the focus and is not duplicated.
+"""Minimal Streamlit UI for the document ranker.
 
 Run with:  py -m streamlit run app/app.py
 """
 import sys
 from pathlib import Path
 
-# Make the rankers in ../src importable.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import pandas as pd
@@ -86,8 +82,6 @@ if query:
             column_config={
                 "Rang": st.column_config.NumberColumn(width="small"),
                 "Dokument": st.column_config.TextColumn(),
-                # Bar is relative to the best score so ranking reads at a glance;
-                # the printed number stays the true cosine score.
                 "Score": st.column_config.ProgressColumn(
                     "Relevanz",
                     format="%.4f",
